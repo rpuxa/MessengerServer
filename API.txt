@@ -1,6 +1,9 @@
 Почти во всех запросах может вернуться ошибка ввиде
 {error: <код ошибки>}
 
+Все коды ошибок:
+https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/messengerserver/Error.kt
+
 
 ===Проверка доступности сервера===
 /welcome
