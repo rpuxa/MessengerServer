@@ -1,0 +1,121 @@
+Почти во всех запросах может вернуться ошибка ввиде
+{error: <код ошибки>}
+
+
+===Проверка доступности сервера===
+/welcome
+
+{text: "Welcome to android messenger API!"}
+
+
+
+
+===Регистрация===
+/reg?login&pass&name&surname
+
+{token:<токен>}
+
+
+
+
+===Логин===
+/login?login&pass
+
+{token:<токен>}
+
+
+
+
+===Приватная информация профиля===
+/profile/getPrivateInfo?token
+
+{id, login, name, surname}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===Смена имени/фамилии===
+/profile/changeName?token&name&surname
+
+Возвращает:
+{error:<код_ошибки>}
+
+===Получить данные профиля===
+/profile/get?id
+
+Возвращает:
+{id, login, name, surname, icon_url}
+
+===Список друзей===
+/friends/get_all?token
+
+Возвращает:
+{list:[id1, id2, ...]}
+
+===Послать запрос на дружбу===
+/friends/send_request?token&id=<id человека, которому шлем запрос>
+
+Возвращает
+{error:<код_ошибки>}
+
+=== Прочекать входящие запросы на дружбу===
+
+/friends/income_requests?token
+
+Возвращает:
+{list:[id1, id2, ...]}
+
+===Ответить на запрос дружбы===
+
+/friends/answer_request? token&id&accept=<1 или 0>
+
+Возвращает:
+{error:<ошибка>}
