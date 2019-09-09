@@ -96,4 +96,19 @@ object DataBase {
             append(code.toChar())
         }
     }
+
+    fun getPublicInfo(id: Int): RequestAnswer {
+        val statement = connection.prepareStatement("SELECT * FROM users WHERE id = ?")
+        statement.setInt(1, id)
+        val set = statement.executeQuery()
+
+        if (!set.next()) return Error.UNKNOWN_ID
+
+        return ProfileInfo(
+            set.getInt("id"),
+            set.getString("login"),
+            set.getString("name"),
+            set.getString("surname")
+        )
+    }
 }

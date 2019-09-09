@@ -2,10 +2,7 @@ package ru.rpuxa.messengerserver
 
 import java.net.InetSocketAddress
 import com.sun.net.httpserver.HttpServer
-import ru.rpuxa.messengerserver.requests.LoginRequest
-import ru.rpuxa.messengerserver.requests.PrivateInfoRequest
-import ru.rpuxa.messengerserver.requests.RegisterRequest
-import ru.rpuxa.messengerserver.requests.WelcomeRequest
+import ru.rpuxa.messengerserver.requests.*
 import java.lang.Exception
 
 
@@ -51,6 +48,7 @@ object HttpServer : Runnable, AutoCloseable {
         WelcomeRequest,
         RegisterRequest,
         LoginRequest,
-        PrivateInfoRequest
+        PrivateInfoRequest,
+        PublicInfoRequest
     )
 }
