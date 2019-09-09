@@ -10,7 +10,7 @@ import java.sql.Statement
 
 object DataBase {
 
-    private const val PATH = "C:/home/testuser/messager.db"
+    private const val PATH = "/home/testuser/messager.db"
 
     private lateinit var connection: Connection
     private lateinit var statement: Statement
