@@ -8,16 +8,14 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
 
-object DataBase {
-
-    private const val PATH = "/home/testuser/messenger.db"
+class DataBase(val path: String) {
 
     private lateinit var connection: Connection
     private lateinit var statement: Statement
 
     fun connect() {
         Class.forName("org.sqlite.JDBC")
-        connection = DriverManager.getConnection("jdbc:sqlite:$PATH")
+        connection = DriverManager.getConnection("jdbc:sqlite:$path")
         statement = connection.createStatement()
 
         statement.execute("CREATE TABLE IF NOT EXISTS users ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'token' TEXT, 'login' TEXT, 'pass' BLOB, 'name' TEXT, 'surname' TEXT);")
