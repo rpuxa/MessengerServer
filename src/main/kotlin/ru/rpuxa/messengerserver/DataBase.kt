@@ -1,6 +1,7 @@
 package ru.rpuxa.messengerserver
 
-import ru.rpuxa.messengerserver.answers.ProfileInfo
+import ru.rpuxa.messengerserver.answers.PrivateProfileInfo
+import ru.rpuxa.messengerserver.answers.PublicProfileInfo
 import ru.rpuxa.messengerserver.answers.TokenAnswer
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -65,7 +66,7 @@ object DataBase {
 
         if (!set.next()) return Error.UNKNOWN_TOKEN
 
-        return ProfileInfo(
+        return PrivateProfileInfo(
             set.getInt("id"),
             set.getString("login"),
             set.getString("name"),
@@ -104,8 +105,7 @@ object DataBase {
 
         if (!set.next()) return Error.UNKNOWN_ID
 
-        return ProfileInfo(
-            set.getInt("id"),
+        return PublicProfileInfo(
             set.getString("login"),
             set.getString("name"),
             set.getString("surname")

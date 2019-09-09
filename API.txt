@@ -37,6 +37,12 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 
 
 
+===Публичная информация профиля===
+/profile/getPublicInfo?id
+
+{login, name, surname}
+
+
 
 
 
