@@ -13,6 +13,6 @@ object RegisterRequest : Request("/reg") {
         val name = query["name"] ?: return Error.WRONG_ARGS
         val surname = query["surname"] ?: return Error.WRONG_ARGS
 
-        return DataBase("").createNewUser(login, pass, name, surname)
+        return DataBase.createNewUser(login, pass, name, surname)
     }
 }

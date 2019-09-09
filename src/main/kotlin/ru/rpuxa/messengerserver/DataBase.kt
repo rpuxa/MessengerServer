@@ -8,7 +8,9 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
 
-class DataBase(val path: String) {
+object DataBase {
+
+    val path = "messenger.db"
 
     private lateinit var connection: Connection
     private lateinit var statement: Statement

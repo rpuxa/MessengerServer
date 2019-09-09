@@ -11,6 +11,6 @@ object LoginRequest : Request("/login") {
         val login = query["login"] ?: return Error.WRONG_ARGS
         val pass = query["pass"] ?: return Error.WRONG_ARGS
 
-        return DataBase("").login(login, pass)
+        return DataBase.login(login, pass)
     }
 }
