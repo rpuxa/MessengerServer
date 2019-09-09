@@ -13,13 +13,14 @@ object HttpServer : Runnable, AutoCloseable {
     private var server: HttpServer? = null
 
     override fun run() {
+        println("Start server at $IP:$PORT")
         val server = HttpServer.create(
             InetSocketAddress(
                 IP,
                 PORT
             ), 0
         )
-        ru.rpuxa.messengerserver.HttpServer.server = server
+        this.server = server
         for (request in ALL_REQUESTS) {
             server.createContext(request.path) {
                 println("Request received")
