@@ -16,7 +16,7 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 ===Регистрация===
 /reg?login&pass&name&surname
 
-{token:<токен>}
+{token}
 
 
 
@@ -24,7 +24,7 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 ===Логин===
 /login?login&pass
 
-{token:<токен>}
+{token}
 
 
 

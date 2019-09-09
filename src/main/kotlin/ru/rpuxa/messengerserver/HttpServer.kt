@@ -22,11 +22,12 @@ object HttpServer : Runnable, AutoCloseable {
         ru.rpuxa.messengerserver.HttpServer.server = server
         for (request in ALL_REQUESTS) {
             server.createContext(request.path) {
+                println("Request received")
                 val answer = try {
                     request.execute(it)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    throw e
+                    "ERROR: ${e.message}"
                 }
                 val bytes = answer.toByteArray()
                 it.sendResponseHeaders(200, bytes.size.toLong())
@@ -38,6 +39,8 @@ object HttpServer : Runnable, AutoCloseable {
         }
         server.executor = null
         server.start()
+
+        println("Server started!")
     }
 
     override fun close() {

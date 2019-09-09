@@ -27,7 +27,10 @@ object DataBase {
     fun createNewUser(login: String, pass: String, name: String, surname: String): RequestAnswer {
         val encryptedPass = encrypt(pass)
 
-        val set = statement.executeQuery("SELECT * FROM users WHERE login = $login")
+        val set = connection.prepareStatement("SELECT * FROM users WHERE login = ?").run {
+            setString(1, login)
+            executeQuery()
+        }
 
         if (set.next()) return Error.LOGIN_ALREADY_EXISTS
 
@@ -49,7 +52,10 @@ object DataBase {
     fun login(login: String, pass: String): RequestAnswer {
         val encryptedPass = encrypt(pass)
 
-        val set = statement.executeQuery("SELECT * FROM users WHERE login = $login")
+        val set = connection.prepareStatement("SELECT * FROM users WHERE login = ?").run {
+            setString(1, login)
+            executeQuery()
+        }
         if (!set.next()) return Error.WRONG_LOGIN_OR_PASSWORD
 
         val currentPass = set.getBytes("pass")
