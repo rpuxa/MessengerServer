@@ -10,7 +10,7 @@ import java.lang.Exception
 
 
 object HttpServer : Runnable, AutoCloseable {
-    private const val IP = "localhost"
+    private const val IP = "176.57.217.44"
     private const val PORT = 80
 
     private var server: HttpServer? = null
