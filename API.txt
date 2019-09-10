@@ -1,5 +1,7 @@
 Почти во всех запросах может вернуться ошибка ввиде
 {error: <код ошибки>}
+или
+{error: <код ошибки>, error_text: Бтекст ошибки>}
 
 Все коды ошибок:
 https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/messengerserver/Error.kt

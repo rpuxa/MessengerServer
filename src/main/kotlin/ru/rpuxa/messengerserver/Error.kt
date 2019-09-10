@@ -1,6 +1,6 @@
 package ru.rpuxa.messengerserver
 
-enum class Error(val error: Int) : RequestAnswer {
+enum class Error(val code: Int, val text: String? = null) : RequestAnswer {
     NO_ERROR(0),
     WRONG_ARGS(1),
     UNKNOWN_TOKEN(2),
@@ -8,5 +8,13 @@ enum class Error(val error: Int) : RequestAnswer {
 
     LOGIN_ALREADY_EXISTS(100),
     WRONG_LOGIN_OR_PASSWORD(101),
+    LOGIN_TOO_SHORT(102, "Логин должен содержать как минимум 4 символа"),
+    LOGIN_TOO_LONG(103, "Логин должен содержать максимум 16 символов"),
+    LOGIN_CONTAINS_WRONG_SYMBOLS(104, "Логин должен состоять из следующих символов: (A-Za-z1-9_-)"),
+    PASSWORD_TOO_SHORT(105, "Пароль должен содержать минимум 4 символа"),
+    NAME_WRONG_LENGTH(106, "Имя должно содержать от 1 до 32 символов"),
+    NAME_CONTAINS_WRONG_SYMBOLS(107, "Имя должно состоять из букв латинского или кириллического алфавитов"),
+    SURNAME_WRONG_LENGTH(108, "Фамилия должна содержать от 1 до 32 символов"),
+    SURNAME_CONTAINS_WRONG_SYMBOLS(109, "Фамилия должна состоять из букв латинского или кириллического алфавитов"),
     ;
 }

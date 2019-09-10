@@ -21,7 +21,7 @@ object DataBase {
         connection = DriverManager.getConnection("jdbc:sqlite:$path")
         statement = connection.createStatement()
 
-        statement.execute("CREATE TABLE IF NOT EXISTS users ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'token' TEXT, 'login' TEXT, 'pass' BLOB, 'name' TEXT, 'surname' TEXT);")
+        statement.execute("""CREATE TABLE IF NOT EXISTS users ('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'token' TEXT, 'login' TEXT, 'pass' BLOB, 'name' TEXT, 'surname' TEXT);""")
     }
 
     fun createNewUser(login: String, pass: String, name: String, surname: String): RequestAnswer {

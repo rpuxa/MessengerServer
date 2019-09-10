@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sun.net.httpserver.HttpExchange
 import ru.rpuxa.messengerserver.answers.ErrorAnswer
+import ru.rpuxa.messengerserver.answers.TextErrorAnswer
 
 abstract class Request(val path: String) {
 
@@ -13,13 +14,21 @@ abstract class Request(val path: String) {
         (exchange.requestURI.query ?: "").split('&').forEach {
             if ('=' in it) {
                 val (name, value) = it.split('=')
-                map[name] = value
+                if (name.isNotBlank())
+                    map[name] = value
             }
         }
 
-        var onExecute: Any = onExecute(map)
-        if (onExecute is Error)
-            onExecute = ErrorAnswer(onExecute.error.toString())
+        var onExecute: RequestAnswer = onExecute(map)
+        if (onExecute is Error) {
+            val text = onExecute.text
+            val code = onExecute.code.toString()
+            onExecute = if (text == null) {
+                ErrorAnswer(code)
+            } else {
+                TextErrorAnswer(code, text)
+            }
+        }
         return gson.toJson(onExecute)
     }
 
@@ -28,4 +37,4 @@ abstract class Request(val path: String) {
     companion object {
         private val gson: Gson = GsonBuilder().create()
     }
-}
+    }
