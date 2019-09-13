@@ -11,6 +11,16 @@ object DataBase {
 
     const val PATH = "messenger.db"
 
+    private const val USERS_TABLE = "users"
+
+    private const val ID = "id"
+    private const val TOKEN = "token"
+    private const val LOGIN = "login"
+    private const val PASSWORD = "pass"
+    private const val NAME = "name"
+    private const val SURNAME = "surname"
+    private const val BIRTHDAY = "birthday"
+
     private lateinit var connection: Connection
     private lateinit var statement: Statement
 
@@ -20,15 +30,15 @@ object DataBase {
         statement = connection.createStatement()
 
         statement.execute(
-            """CREATE TABLE IF NOT EXISTS users
+            """CREATE TABLE IF NOT EXISTS $USERS_TABLE
 (
-    'id'      INTEGER PRIMARY KEY AUTOINCREMENT,
-    'token'   TEXT,
-    'login'   TEXT,
-    'pass'    BLOB,
-    'name'    TEXT,
-    'surname' TEXT,
-    'birthday' INTEGER
+    '$ID'      INTEGER PRIMARY KEY AUTOINCREMENT,
+    '$TOKEN'   TEXT,
+    '$LOGIN'   TEXT,
+    '$PASSWORD'    BLOB,
+    '$NAME'    TEXT,
+    '$SURNAME' TEXT,
+    '$BIRTHDAY' INTEGER
 );"""
         )
     }
@@ -39,13 +49,14 @@ object DataBase {
         val encryptedPass = encrypt(pass)
         val token = randomToken()
 
-        connection.prepareStatement("INSERT INTO users (token, login, pass, name, surname) VALUES (?, ?, ?, ?, ?)")
+        connection.prepareStatement("INSERT INTO users ($TOKEN, $LOGIN, $PASSWORD, $NAME, $SURNAME, $BIRTHDAY) VALUES (?, ?, ?, ?, ?, ?)")
             .apply {
                 setString(1, token)
                 setString(2, login)
                 setBytes(3, encryptedPass)
                 setString(4, name)
                 setString(5, surname)
+                setLong(6, 0)
                 executeUpdate()
             }
 
@@ -56,33 +67,46 @@ object DataBase {
         val encryptedPass = encrypt(pass)
 
         val set = userByLogin(login) ?: return Error.WRONG_LOGIN_OR_PASSWORD
-        val currentPass = set.getBytes("pass")
+        val currentPass = set.getBytes(PASSWORD)
 
         if (!encryptedPass.contentEquals(currentPass)) return Error.WRONG_LOGIN_OR_PASSWORD
 
-        return TokenAnswer(set.getString("token"))
+        return TokenAnswer(set.getString(TOKEN))
     }
 
     fun getPrivateInfo(token: String): RequestAnswer {
         val set = userByToken(token) ?: return Error.UNKNOWN_TOKEN
 
         return PrivateProfileInfo(
-            set.getInt("id"),
-            set.getString("login"),
-            set.getString("name"),
-            set.getString("surname")
+            set.getInt(ID),
+            set.getString(LOGIN),
+            set.getString(NAME),
+            set.getString(SURNAME),
+            set.getLong(BIRTHDAY)
+        )
+    }
+
+
+    fun getPublicInfo(id: Int): RequestAnswer {
+        val set = userById(id) ?: return Error.UNKNOWN_ID
+
+        return PublicProfileInfo(
+            set.getString(LOGIN),
+            set.getString(NAME),
+            set.getString(SURNAME),
+            set.getLong(BIRTHDAY)
         )
     }
 
     fun setUserField(token: String, fieldName: String, value: String): Error {
         if (userByToken(token) == null) return Error.UNKNOWN_TOKEN
 
-        fun setField() = connection.prepareStatement("UPDATE users SET $fieldName = ? WHERE id = ?").apply {
+        fun setField() = connection.prepareStatement("UPDATE $USERS_TABLE SET $fieldName = ? WHERE $ID = ?").apply {
             setString(2, token)
         }
 
         when (fieldName) {
-            "login" -> {
+            LOGIN -> {
                 UserDataConditions.checkLogin(value)?.also { return it }
 
                 if (userByLogin(value) != null) return Error.LOGIN_ALREADY_EXISTS
@@ -91,25 +115,25 @@ object DataBase {
 
             }
 
-            "pass" -> {
+            PASSWORD -> {
                 UserDataConditions.checkPassword(value)?.also { return it }
 
                 setField().setBytes(1, encrypt(value))
             }
 
-            "name" -> {
+            NAME -> {
                 UserDataConditions.checkName(value)?.also { return it }
 
                 setField().setString(1, value)
             }
 
-            "surname" -> {
+            SURNAME -> {
                 UserDataConditions.checkSurname(value)?.also { return it }
 
                 setField().setString(1, value)
             }
 
-            "birthday" -> {
+            BIRTHDAY -> {
                 val birthday = value.toLongOrNull() ?: return Error.WRONG_ARGS
                 UserDataConditions.checkBirthday(birthday)?.also { return it }
 
@@ -135,7 +159,7 @@ object DataBase {
     }
 
     private fun userByToken(token: String): ResultSet? {
-        val set = connection.prepareStatement("SELECT * FROM users WHERE token = ?").run {
+        val set = connection.prepareStatement("SELECT * FROM $USERS_TABLE WHERE $TOKEN = ?").run {
             setString(1, token)
             executeQuery()
         }
@@ -144,7 +168,7 @@ object DataBase {
     }
 
     private fun userByLogin(login: String): ResultSet? {
-        val set = connection.prepareStatement("SELECT * FROM users WHERE login = ?").run {
+        val set = connection.prepareStatement("SELECT * FROM $USERS_TABLE WHERE $LOGIN = ?").run {
             setString(1, login)
             executeQuery()
         }
@@ -153,7 +177,7 @@ object DataBase {
     }
 
     private fun userById(id: Int): ResultSet? {
-        val set = connection.prepareStatement("SELECT * FROM users WHERE id = ?").run {
+        val set = connection.prepareStatement("SELECT * FROM $USERS_TABLE WHERE $ID = ?").run {
             setInt(1, id)
             executeQuery()
         }
@@ -179,17 +203,4 @@ object DataBase {
         }
     }
 
-    fun getPublicInfo(id: Int): RequestAnswer {
-        val statement = connection.prepareStatement("SELECT * FROM users WHERE id = ?")
-        statement.setInt(1, id)
-        val set = statement.executeQuery()
-
-        if (!set.next()) return Error.UNKNOWN_ID
-
-        return PublicProfileInfo(
-            set.getString("login"),
-            set.getString("name"),
-            set.getString("surname")
-        )
-    }
 }

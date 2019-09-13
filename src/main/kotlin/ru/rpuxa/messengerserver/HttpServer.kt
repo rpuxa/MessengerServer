@@ -12,7 +12,7 @@ class HttpServer(private val ip: String, private val port: Int) : Runnable, Auto
     private var server: HttpServer? = null
 
     override fun run() {
-        println("Start server at $ip:$port...")
+        println("Starting server at $ip:$port...")
         val server = HttpServer.create(
             InetSocketAddress(
                 ip,

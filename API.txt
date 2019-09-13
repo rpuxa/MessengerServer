@@ -34,7 +34,7 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 ===Приватная информация профиля===
 /profile/getPrivateInfo?token
 
-{id, login, name, surname}
+{id, login, name, surname, birthday}
 
 
 
@@ -42,7 +42,7 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 ===Публичная информация профиля===
 /profile/getPublicInfo?id
 
-{login, name, surname}
+{login, name, surname, birthday}
 
 
 
@@ -56,7 +56,7 @@ name
 surname
 birthday
 
-Возвращает только ошибку (в том числе нулевую, если установка прошла успешно)
+Возвращает только ошибку (в том числе нулевую, если изменение прошло успешно)
 
 
 

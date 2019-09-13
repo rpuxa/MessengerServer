@@ -13,7 +13,12 @@ object UserDataConditions {
         return null
     }
 
-    fun checkSurname(surname: String) = checkName(surname)
+    fun checkSurname(surname: String): Error? {
+        if (surname.length !in 1..32) return Error.SURNAME_WRONG_LENGTH
+        if (!surname.all { it.isLetter() }) return Error.SURNAME_CONTAINS_WRONG_SYMBOLS
+
+        return null
+    }
 
     fun checkLogin(login: String): Error? {
         if (login.length < 4) return Error.LOGIN_TOO_SHORT
