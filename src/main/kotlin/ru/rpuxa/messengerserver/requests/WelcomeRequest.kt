@@ -5,5 +5,5 @@ import ru.rpuxa.messengerserver.RequestAnswer
 import ru.rpuxa.messengerserver.answers.WelcomeAnswer
 
 object WelcomeRequest : Request("/welcome") {
-    override fun onExecute(query: Map<String, String>) = WelcomeAnswer
+    override fun onExecute(query: Map<String, String>) = WelcomeAnswer()
 }

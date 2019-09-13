@@ -6,24 +6,22 @@ import ru.rpuxa.messengerserver.requests.*
 import java.lang.Exception
 
 
-object HttpServer : Runnable, AutoCloseable {
-    private const val IP = "176.57.217.44"
-    private const val PORT = 80
+class HttpServer(private val ip: String, private val port: Int) : Runnable, AutoCloseable {
+
 
     private var server: HttpServer? = null
 
     override fun run() {
-        println("Start server at $IP:$PORT")
+        println("Start server at $ip:$port...")
         val server = HttpServer.create(
             InetSocketAddress(
-                IP,
-                PORT
+                ip,
+                port
             ), 0
         )
         this.server = server
         for (request in ALL_REQUESTS) {
             server.createContext(request.path) {
-                println("Request received")
                 val answer = try {
                     request.execute(it)
                 } catch (e: Exception) {
@@ -48,11 +46,15 @@ object HttpServer : Runnable, AutoCloseable {
         server?.stop(10)
     }
 
-    private val ALL_REQUESTS = arrayOf(
-        WelcomeRequest,
-        RegisterRequest,
-        LoginRequest,
-        PrivateInfoRequest,
-        PublicInfoRequest
-    )
+    companion object {
+
+        private val ALL_REQUESTS = arrayOf(
+            WelcomeRequest,
+            RegisterRequest,
+            LoginRequest,
+            PrivateInfoRequest,
+            PublicInfoRequest,
+            SetInfoRequest
+        )
+    }
 }

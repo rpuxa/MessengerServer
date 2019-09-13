@@ -46,6 +46,20 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 
 
 
+===Изменить информацию профиля===
+/profile/setInfo?token & имя_поля1=значение1 & имя_поля2=значение2...
+
+Имена полей:
+login
+pass
+name
+surname
+birthday
+
+Возвращает только ошибку (в том числе нулевую, если установка прошла успешно)
+
+
+
 
 
 
