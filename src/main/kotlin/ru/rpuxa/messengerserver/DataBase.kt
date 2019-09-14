@@ -13,13 +13,15 @@ object DataBase {
 
     private const val USERS_TABLE = "users"
 
-    private const val ID = "id"
-    private const val TOKEN = "token"
-    private const val LOGIN = "login"
-    private const val PASSWORD = "pass"
-    private const val NAME = "name"
-    private const val SURNAME = "surname"
-    private const val BIRTHDAY = "birthday"
+    const val ID = "id"
+    const val TOKEN = "token"
+    const val LOGIN = "login"
+    const val PASSWORD = "pass"
+    const val NAME = "name"
+    const val SURNAME = "surname"
+    const val BIRTHDAY = "birthday"
+
+    private const val BIRTHDAY_NOT_INITIALIZED = 0L
 
     private lateinit var connection: Connection
     private lateinit var statement: Statement
@@ -56,7 +58,7 @@ object DataBase {
                 setBytes(3, encryptedPass)
                 setString(4, name)
                 setString(5, surname)
-                setLong(6, 0)
+                setLong(6, BIRTHDAY_NOT_INITIALIZED)
                 executeUpdate()
             }
 
@@ -98,46 +100,57 @@ object DataBase {
         )
     }
 
-    fun setUserField(token: String, fieldName: String, value: String): Error {
+    fun setUserField(token: String, currentPassword: String?, fieldName: String, value: String): Error {
         if (userByToken(token) == null) return Error.UNKNOWN_TOKEN
 
-        fun setField() = connection.prepareStatement("UPDATE $USERS_TABLE SET $fieldName = ? WHERE $ID = ?").apply {
+        fun setField() = connection.prepareStatement("UPDATE $USERS_TABLE SET $fieldName = ? WHERE $TOKEN = ?").apply {
             setString(2, token)
+        }
+
+        fun checkPass(): Boolean {
+            val statement = connection.prepareStatement("SELECT * FROM $USERS_TABLE WHERE $TOKEN = ? AND $PASSWORD = ?")
+            statement.setString(1, token)
+            statement.setBytes(2, encrypt(currentPassword!!))
+
+            return statement.executeQuery().next()
         }
 
         when (fieldName) {
             LOGIN -> {
+                if (currentPassword == null) return Error.CURRENT_PASSWORD_NEEDED
+                if (!checkPass()) return Error.CURRENT_PASSWORD_WRONG
+
                 UserDataConditions.checkLogin(value)?.also { return it }
 
                 if (userByLogin(value) != null) return Error.LOGIN_ALREADY_EXISTS
 
-                setField().setString(1, value)
-
+                setField().apply { setString(1, value) }.executeUpdate()
             }
 
             PASSWORD -> {
-                UserDataConditions.checkPassword(value)?.also { return it }
+                if (currentPassword == null) return Error.CURRENT_PASSWORD_NEEDED
+                if (!checkPass()) return Error.CURRENT_PASSWORD_WRONG
 
-                setField().setBytes(1, encrypt(value))
+                UserDataConditions.checkPassword(value)?.also { return it }
+                setField().apply { setBytes(1, encrypt(value)) }.executeUpdate()
             }
 
             NAME -> {
                 UserDataConditions.checkName(value)?.also { return it }
 
-                setField().setString(1, value)
+                setField().apply { setString(1, value) }.executeUpdate()
             }
 
             SURNAME -> {
                 UserDataConditions.checkSurname(value)?.also { return it }
 
-                setField().setString(1, value)
+                setField().apply { setString(1, value) }.executeUpdate()
             }
 
             BIRTHDAY -> {
                 val birthday = value.toLongOrNull() ?: return Error.WRONG_ARGS
                 UserDataConditions.checkBirthday(birthday)?.also { return it }
-
-                setField().setLong(1, birthday)
+                setField().apply { setLong(1, birthday) }.executeUpdate()
             }
 
             else -> Error.UNKNOWN_USER_FIELD
@@ -184,6 +197,7 @@ object DataBase {
 
         return if (set.next()) set else null
     }
+
 
     private val digest = MessageDigest.getInstance("SHA-256")
     private val random = SecureRandom()

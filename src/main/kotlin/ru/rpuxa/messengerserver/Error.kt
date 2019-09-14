@@ -21,5 +21,7 @@ enum class Error(val code: Int, val text: String? = null) : RequestAnswer {
 
     // Profile
     UNKNOWN_USER_FIELD(200),
+    CURRENT_PASSWORD_NEEDED(201),
+    CURRENT_PASSWORD_WRONG(202, "Текущий пароль введен неверно"),
     ;
 }
