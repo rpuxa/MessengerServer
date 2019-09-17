@@ -21,7 +21,7 @@ object DataBase {
     const val SURNAME = "surname"
     const val BIRTHDAY = "birthday"
 
-    private const val BIRTHDAY_NOT_INITIALIZED = 0L
+    private val BIRTHDAY_NOT_INITIALIZED: String? = null
 
     private lateinit var connection: Connection
     private lateinit var statement: Statement
@@ -34,13 +34,13 @@ object DataBase {
         statement.execute(
             """CREATE TABLE IF NOT EXISTS $USERS_TABLE
 (
-    '$ID'      INTEGER PRIMARY KEY AUTOINCREMENT,
-    '$TOKEN'   TEXT,
-    '$LOGIN'   TEXT,
-    '$PASSWORD'    BLOB,
-    '$NAME'    TEXT,
-    '$SURNAME' TEXT,
-    '$BIRTHDAY' INTEGER
+    '$ID'       INTEGER PRIMARY KEY AUTOINCREMENT,
+    '$TOKEN'    TEXT,
+    '$LOGIN'    TEXT,
+    '$PASSWORD'     BLOB,
+    '$NAME'     TEXT,
+    '$SURNAME'  TEXT,
+    '$BIRTHDAY' TEXT
 );"""
         )
     }
@@ -58,7 +58,7 @@ object DataBase {
                 setBytes(3, encryptedPass)
                 setString(4, name)
                 setString(5, surname)
-                setLong(6, BIRTHDAY_NOT_INITIALIZED)
+                setString(6, BIRTHDAY_NOT_INITIALIZED)
                 executeUpdate()
             }
 
@@ -84,7 +84,7 @@ object DataBase {
             set.getString(LOGIN),
             set.getString(NAME),
             set.getString(SURNAME),
-            set.getLong(BIRTHDAY)
+            set.getString(BIRTHDAY)
         )
     }
 
@@ -96,7 +96,7 @@ object DataBase {
             set.getString(LOGIN),
             set.getString(NAME),
             set.getString(SURNAME),
-            set.getLong(BIRTHDAY)
+            set.getString(BIRTHDAY)
         )
     }
 
@@ -148,9 +148,8 @@ object DataBase {
             }
 
             BIRTHDAY -> {
-                val birthday = value.toLongOrNull() ?: return Error.WRONG_ARGS
-                UserDataConditions.checkBirthday(birthday)?.also { return it }
-                setField().apply { setLong(1, birthday) }.executeUpdate()
+                UserDataConditions.checkBirthday(value)?.also { return it }
+                setField().apply { setString(1, value) }.executeUpdate()
             }
 
             else -> Error.UNKNOWN_USER_FIELD

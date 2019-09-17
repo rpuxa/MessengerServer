@@ -47,7 +47,7 @@ https://github.com/rpuxa/MessengerServer/blob/master/src/main/kotlin/ru/rpuxa/me
 
 
 ===Изменить информацию профиля===
-/profile/setInfo?token & имя_поля1=значение1 & имя_поля2=значение2...
+/profile/setInfo?token & current_pass=<текущий пароль, нужен только для логина и пароля> & имя_поля1=значение1 & имя_поля2=значение2...
 
 Имена полей:
 login

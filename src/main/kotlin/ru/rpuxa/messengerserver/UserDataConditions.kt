@@ -30,7 +30,7 @@ object UserDataConditions {
 
     fun checkPassword(pass: String) = if (pass.length < 4) Error.PASSWORD_TOO_SHORT else null
 
-    fun checkBirthday(value: Long): Error? {
+    fun checkBirthday(value: String): Error? {
         return null
     }
 }
