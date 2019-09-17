@@ -40,6 +40,8 @@ fun main() {
             "exit" -> {
                 exitProcess(0)
             }
+
+            else -> println("Unknown command")
         }
     }
 }
