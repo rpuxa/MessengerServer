@@ -5,13 +5,31 @@ import com.google.gson.GsonBuilder
 import com.sun.net.httpserver.HttpExchange
 import ru.rpuxa.messengerserver.answers.ErrorAnswer
 import ru.rpuxa.messengerserver.answers.TextErrorAnswer
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 
 abstract class Request(val path: String) {
 
     fun execute(exchange: HttpExchange): String {
         val map = HashMap<String, String>()
 
-        (exchange.requestURI.query ?: "").split('&').forEach {
+        val streamReader = InputStreamReader(exchange.requestBody, "utf-8")
+        val bufferedReader = BufferedReader(streamReader)
+
+        val builder = StringBuilder(exchange.requestURI.query ?: "")
+        if (builder.isNotEmpty())
+            builder.append('&')
+        while (true) {
+            val b = bufferedReader.read()
+            if (b == -1) break
+            builder.append(b.toChar())
+        }
+
+        bufferedReader.close()
+        streamReader.close()
+
+        builder.split('&').forEach {
             if ('=' in it) {
                 val (name, value) = it.split('=')
                 if (name.isNotBlank())
@@ -37,4 +55,4 @@ abstract class Request(val path: String) {
     companion object {
         private val gson: Gson = GsonBuilder().create()
     }
-    }
+}

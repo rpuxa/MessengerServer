@@ -7,7 +7,7 @@ const val DEFAULT_IP = "176.57.217.44"
 const val DEFAULT_PORT = 80
 
 fun main() {
-    println("Server running1...")
+    println("Server running2...")
     var server = HttpServer(DEFAULT_IP, DEFAULT_PORT)
 
     while (true) {
